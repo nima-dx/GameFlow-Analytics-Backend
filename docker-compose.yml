@@ -59,6 +59,7 @@ services:
       - ./airflow/dags:/app/airflow/dags
       - ./airflow/data:/app/airflow/data
       - ./airflow/logs:/app/airflow/logs
+      - ./spark_jobs:/app/spark_jobs
     ports:
       - "8080:8080"
     healthcheck:
@@ -68,3 +69,14 @@ services:
       retries: 3
     tty: true
     stdin_open: true
+
+  spark:
+    image: bitnami/spark:latest
+    container_name: spark
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "7077:7077"
+      - "8081:8080"
+    volumes:
+      - ./spark_jobs:/app/spark_jobs
