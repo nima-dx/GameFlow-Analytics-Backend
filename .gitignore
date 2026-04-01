@@ -1,2 +1,18 @@
 credentials/
 *.json
+
+# Airflow runtime directories
+airflow/database/
+airflow/logs/
+airflow/data/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+*.egg-info/
+
+# Environment
+.env
+.envrc
