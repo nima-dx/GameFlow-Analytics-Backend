@@ -71,7 +71,7 @@ services:
     stdin_open: true
 
   spark:
-    image: bitnami/spark:latest
+    image: apache/spark:3.5.0
     container_name: spark
     environment:
       - SPARK_MODE=master
