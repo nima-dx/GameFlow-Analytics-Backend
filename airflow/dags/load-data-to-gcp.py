@@ -37,9 +37,10 @@ with DAG(
     # TABLE_NAME = "yellow_tripdata"
 
     wait_for_transform_task = ExternalTaskSensor(
-        task_id="transform_sensor",
+        task_id="ingest_sensor",
         # $CODE_BEGIN
         external_dag_id="api_ingest",
+        external_task_id="end_task",
         allowed_states=["success"],
         poke_interval=10,
         timeout=60 * 10,
@@ -57,10 +58,4 @@ with DAG(
     )
 
 
-    # Organise your tasks hierachy here
-    # $CHA_BEGIN
-    (
-        wait_for_transform_task
-        >> upload_local_file_to_gcs_task
-    )
-    # $CHA_END
+    wait_for_transform_task >> upload_local_file_to_gcs_task

@@ -5,6 +5,7 @@ from pathlib import Path
 import requests
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.operators.empty import EmptyOperator
 
 
 def fetch_and_save_leagues():
@@ -46,3 +47,11 @@ with DAG(
         task_id="fetch_and_save_leagues",
         python_callable=fetch_and_save_leagues,
     )
+
+    end_task = EmptyOperator(
+        task_id="end",
+        trigger_rule="one_success"
+    )
+
+    # tasks hierachy:
+    fetch_leagues_task >> end_task
