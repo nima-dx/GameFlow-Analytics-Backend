@@ -37,10 +37,11 @@ def fetch_and_save_leagues():
 with DAG(
     dag_id="api_ingest",
     description="Fetch leagues data from TheSportsDB API and save to JSON file",
-    start_date=datetime(2024, 1, 1),
-    schedule=None,  # No schedule - run manually only
-    catchup=False,
-    tags=["api", "ingest", "sports"],
+    # start_date=datetime(2024, 1, 1),
+    start_date=datetime(2026,3, 4),
+    schedule="@daily",
+    catchup=True
+    # tags=["api", "ingest", "sports"],
 ) as dag:
 
     fetch_leagues_task = PythonOperator(

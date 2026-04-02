@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 from airflow import DAG
-
+from airflow.utils.dates import days_ago
 from airflow.sensors.external_task import ExternalTaskSensor
 
 from airflow.providers.google.cloud.operators.bigquery import (
@@ -22,9 +22,8 @@ AIRFLOW_HOME = os.getenv("AIRFLOW_HOME")
 
 with DAG(
     "load",
-    default_args={"depends_on_past": False},
-    start_date=datetime(2021, 6, 1),
-    schedule_interval=None,
+    start_date=datetime(2026,3, 4),
+    schedule="@daily",
     catchup=False,
 ) as dag:
     date = "{{ ds[:7] }}"
@@ -40,21 +39,22 @@ with DAG(
         task_id="ingest_sensor",
         # $CODE_BEGIN
         external_dag_id="api_ingest",
-        external_task_id="end_task",
+        external_task_id="end",
         allowed_states=["success"],
-        poke_interval=10,
-        timeout=60 * 10,
+        # Look for api_ingest dag run from the same logical day (at midnight)
+        execution_date_fn=lambda dt: dt.replace(hour=0, minute=0, second=0, microsecond=0),
+        # deferrable = True
+        # poke_interval=10,
+        # timeout=60 * 10,
         # $CODE_END
     )
 
     upload_local_file_to_gcs_task = LocalFilesystemToGCSOperator(
         task_id="upload_local_file_to_gcs",
-        # $CODE_BEGIN
-        gcp_conn_id="google_cloud_connection",
         src=data_file,
         dst=f"leagues.json",
         bucket="gameflow-ingestion-raw",
-        # $CODE_END
+        gcp_conn_id="google_cloud_connection"
     )
 
 
