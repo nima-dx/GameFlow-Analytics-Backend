@@ -5,10 +5,10 @@ import os
 spark = SparkSession.builder.appName("move_and_transform").getOrCreate()
 
 # Input path (bucket 1)
-input_path = "data/leagues.json" #os.getenv("RAW_BUCKET")
+input_path = os.getenv("RAW_BUCKET")
 
 # Output path (bucket 2)
-output_path =  "data/output/leagues_parquet" #os.getenv("PROCESSED_BUCKET")
+output_path =  os.getenv("PROCESSED_BUCKET")
 
 # Read parquet
 #df = spark.read.parquet(input_path)
