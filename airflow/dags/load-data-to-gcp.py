@@ -22,11 +22,10 @@ AIRFLOW_HOME = os.getenv("AIRFLOW_HOME")
 
 with DAG(
     "load",
-    start_date=datetime(2026,3, 4),
+    start_date=datetime(2026,4,1),
     schedule="@daily",
     catchup=False,
 ) as dag:
-    date = "{{ ds[:7] }}"
     data_file = f"{AIRFLOW_HOME}/data/api-ingest/leagues.json"
 
      # GCP Configuration
