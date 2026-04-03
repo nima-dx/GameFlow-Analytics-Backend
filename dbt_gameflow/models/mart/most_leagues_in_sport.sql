@@ -8,10 +8,10 @@
 */
 
 select
-    strSport,
-    count(distinct idLeague) as most_leagues
+    sport_name,
+    count(distinct league_id) as most_leagues
 from {{ source('raw_dataset', 'leagues') }}
-group by strSport
+group by sport_name
 order by most_leagues desc
 limit 10
 
