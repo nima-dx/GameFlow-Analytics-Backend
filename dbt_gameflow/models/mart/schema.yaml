@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: most_leagues_in_sport
+    description: "Top 10 sports ranked by number of leagues"
+    columns:
+      - name: strSport
+        description: "Sport name"
+      - name: most_league
+        description: "Count of distinct leagues per sport"
