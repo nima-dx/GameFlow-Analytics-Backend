@@ -36,10 +36,12 @@ services:
       - AIRFLOW__CORE__FERNET_KEY=$AIRFLOW_FERNET_KEY
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
       - AIRFLOW_CONN_GOOGLE_CLOUD_CONNECTION=google-cloud-platform://?key_path=/app/gcp-credentials.json&scope=https://www.googleapis.com/auth/cloud-platform&project=le-wagon-data-atelier
+      - PYTHONPATH=/app:$PYTHONPATH
     volumes:
       - ./airflow/dags:/app/airflow/dags
       - ./airflow/data:/app/airflow/data
       - ./airflow/logs:/app/airflow/logs
+      - ./ingestion:/app/ingestion
       - ~/.gcp_keys/le-wagon-de-bootcamp.json:/app/gcp-credentials.json:ro
     tty: true
     stdin_open: true
@@ -62,11 +64,13 @@ services:
       - POSTGRES_USER=airflow
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
       - AIRFLOW_CONN_GOOGLE_CLOUD_CONNECTION=google-cloud-platform://?key_path=/app/gcp-credentials.json&scope=https://www.googleapis.com/auth/cloud-platform&project=le-wagon-data-atelier
+      - PYTHONPATH=/app:$PYTHONPATH
     volumes:
       - ./airflow/dags:/app/airflow/dags
       - ./airflow/data:/app/airflow/data
       - ./airflow/logs:/app/airflow/logs
       - ./spark_jobs:/app/spark_jobs
+      - ./ingestion:/app/ingestion
       - ~/.gcp_keys/le-wagon-de-bootcamp.json:/app/gcp-credentials.json:ro
     ports:
       - "8080:8080"
