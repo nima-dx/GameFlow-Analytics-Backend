@@ -1,14 +1,25 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode, col
 import os
+from pathlib import Path
 
-spark = SparkSession.builder.appName("move_and_transform").getOrCreate()
+print("PROCESSED_BUCKET =", os.getenv("PROCESSED_BUCKET"))
+print("GOOGLE_APPLICATION_CREDENTIALS =", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+
+spark = (
+    SparkSession.builder
+    .appName("move_and_transform")
+    .config("spark.hadoop.fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem")
+    .config("spark.hadoop.fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS")
+    .config("spark.hadoop.fs.gs.auth.type", "APPLICATION_DEFAULT")
+    .getOrCreate()
+)
 
 # Input path (bucket 1)
 input_path = "data/leagues.json" #os.getenv("RAW_BUCKET")
 
 # Output path (bucket 2)
-output_path =  "data/output/leagues_parquet" #os.getenv("PROCESSED_BUCKET")
+output_path = f"{os.getenv('PROCESSED_BUCKET')}/leagues_parquet"
 
 # Read parquet
 #df = spark.read.parquet(input_path)
@@ -27,6 +38,8 @@ df_flat = (
     .dropDuplicates()
 )
 
+print(f"Read from local file: {input_path}")
+print(f"Wrote to bucket: {output_path}")
 
 # Write parquet
 df_flat.write.mode("overwrite").parquet(output_path)
