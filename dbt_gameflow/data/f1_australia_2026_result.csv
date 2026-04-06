@@ -1,0 +1,23 @@
+position,driver_number,nationality,driver_name,constructor,laps,time_retired,grid,points
+1,63,United Kingdom,George Russell,Mercedes,58,1:23:06.801,1,25
+2,12,Italy,Kimi Antonelli,Mercedes,58,+2.974,2,18
+3,16,Monaco,Charles Leclerc,Ferrari,58,+15.519,4,15
+4,44,United Kingdom,Lewis Hamilton,Ferrari,58,+16.144,7,12
+5,1,United Kingdom,Lando Norris,McLaren-Mercedes,58,+51.741,6,10
+6,3,Netherlands,Max Verstappen,Red Bull Racing-Red Bull Ford,58,+54.617,20,8
+7,87,United Kingdom,Oliver Bearman,Haas-Ferrari,57,+1 lap,12,6
+8,41,United Kingdom,Arvid Lindblad,Racing Bulls-Red Bull Ford,57,+1 lap,9,4
+9,5,Brazil,Gabriel Bortoleto,Audi,57,+1 lap,10,2
+10,10,France,Pierre Gasly,Alpine-Mercedes,57,+1 lap,14,1
+11,31,France,Esteban Ocon,Haas-Ferrari,57,+1 lap,13,
+12,23,Thailand,Alexander Albon,Atlassian Williams-Mercedes,57,+1 lap,15,
+13,30,New Zealand,Liam Lawson,Racing Bulls-Red Bull Ford,57,+1 lap,8,
+14,43,Argentina,Franco Colapinto,Alpine-Mercedes,56,+2 laps,16,
+15,55,Spain,Carlos Sainz Jr.,Atlassian Williams-Mercedes,56,+2 laps,21,
+16,11,Mexico,Sergio Pérez,Cadillac-Ferrari,55,+3 laps,18,
+NC,18,Canada,Lance Stroll,Aston Martin Aramco-Honda,43,+15 laps1,22,
+Ret,14,Spain,Fernando Alonso,Aston Martin Aramco-Honda,21,Withdrew,17,
+Ret,77,Finland,Valtteri Bottas,Cadillac-Ferrari,15,Fuel system,19,
+Ret,6,France,Isack Hadjar,Red Bull Racing-Red Bull Ford,10,Engine,3,
+DNS,81,Australia,Oscar Piastri,McLaren-Mercedes,0,Accident,—2,
+DNS,27,Germany,Nico Hülkenberg,Audi,0,Mechanical,—2,
