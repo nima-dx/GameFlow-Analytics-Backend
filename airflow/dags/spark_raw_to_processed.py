@@ -18,6 +18,7 @@ with DAG(
         application="/app/spark_jobs/src/move_and_transform.py",
         jars="/app/jars/gcs-connector-hadoop3-2.2.5-shaded.jar",
         conf={
+            "spark.master": "spark://spark:7077",
             "spark.driver.extraClassPath": "/app/jars/gcs-connector-hadoop3-2.2.5-shaded.jar",
             "spark.executor.extraClassPath": "/app/jars/gcs-connector-hadoop3-2.2.5-shaded.jar",
             "spark.hadoop.fs.gs.impl": "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem",

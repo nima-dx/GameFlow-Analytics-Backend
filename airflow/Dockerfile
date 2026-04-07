@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERED=1
 
 ENV AIRFLOW_HOME=/app/airflow
 
+
 # Install curl
 RUN apt-get update && apt-get install -y curl
 
@@ -21,4 +22,4 @@ WORKDIR $AIRFLOW_HOME
 
 RUN pip3 install --upgrade --no-cache-dir pip \
     && pip3 install poetry \
-    && poetry install --only main --no-root
+    && poetry install --only main --no-root\
