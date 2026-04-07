@@ -9,12 +9,15 @@ ENV AIRFLOW_HOME=/app/airflow
 # Install curl
 RUN apt-get update && apt-get install -y curl
 
-WORKDIR $AIRFLOW_HOME
+WORKDIR /app
 
-COPY airflow/scripts scripts
-RUN chmod +x scripts/entrypoint.sh
+COPY airflow/scripts airflow/scripts
+RUN chmod +x airflow/scripts/entrypoint.sh
 
 COPY pyproject.toml poetry.lock ./
+COPY ingestion ./ingestion
+
+WORKDIR $AIRFLOW_HOME
 
 RUN pip3 install --upgrade --no-cache-dir pip \
     && pip3 install poetry \
