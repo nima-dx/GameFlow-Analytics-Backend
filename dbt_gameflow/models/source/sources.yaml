@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw_dataset
+    database: "{{ env_var('GCP_PROJECT_ID') }}"
+    schema: raw_dataset
+    tables:
+      - name: leagues
+      - name: grandprix
