@@ -16,7 +16,7 @@ json_files = glob.glob(f"{DATA_DIR}/*.json") if os.path.exists(DATA_DIR) else []
 
 with DAG(
     "load_multiple",
-    start_date=datetime(2026,4,1),
+    start_date=datetime(2026,4,6),
     schedule="@daily",
     catchup=False,
 ) as dag:
