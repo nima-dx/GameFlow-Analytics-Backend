@@ -42,9 +42,7 @@ services:
       - ./airflow/data:/app/airflow/data
       - ./airflow/logs:/app/airflow/logs
       - ./ingestion:/app/ingestion
-      - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
-      - ./spark_jobs:/app/spark_jobs
-      - ./jars:/app/jars
+      - ~/.gcp_keys/le-wagon-de-bootcamp.json:/app/gcp-credentials.json:ro
     tty: true
     stdin_open: true
 
@@ -73,8 +71,7 @@ services:
       - ./airflow/logs:/app/airflow/logs
       - ./spark_jobs:/app/spark_jobs
       - ./ingestion:/app/ingestion
-      - ./jars:/app/jars #for spark gcs connector
-      - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
+      - ~/.gcp_keys/le-wagon-de-bootcamp.json:/app/gcp-credentials.json:ro
     ports:
       - "8080:8080"
     healthcheck:
@@ -85,17 +82,13 @@ services:
     tty: true
     stdin_open: true
 
-  # spark:
-  #   image: apache/spark:3.5.0
-  #   container_name: spark
-  #   environment:
-  #     - SPARK_MODE=master
-  #     - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
-  #   ports:
-  #     - "7077:7077"
-  #     - "8081:8080"
-  #   volumes:
-  #     - ./spark_jobs:/app/spark_jobs
-  #     - ./jars:/app/jars
-  #     - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
-  #   command: ["/bin/bash", "-c", "tail -f /dev/null"]
+  spark:
+    image: apache/spark:3.5.0
+    container_name: spark
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "7077:7077"
+      - "8081:8080"
+    volumes:
+      - ./spark_jobs:/app/spark_jobs
