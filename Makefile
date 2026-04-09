@@ -25,4 +25,4 @@ load-grandprix:
 		dbt_gameflow/data/f1_season_2026.parquet
 
 dbt-run-most-leagues:
-	@source .env && dbt run --select most_leagues_in_sport
+	@source .env && dbt run --select most_leagues_in_sport --project-dir /home/arthurdeetu/code/joaquin-ortega84/GameFlow-Analytics-Backend/dbt_gameflow/

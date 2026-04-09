@@ -16,9 +16,11 @@ RUN chmod +x airflow/scripts/entrypoint.sh
 
 COPY pyproject.toml poetry.lock ./
 COPY ingestion ./ingestion
-
-WORKDIR $AIRFLOW_HOME
+COPY dbt_gameflow ./dbt_gameflow
+COPY .env .env
 
 RUN pip3 install --upgrade --no-cache-dir pip \
     && pip3 install poetry \
     && poetry install --only main --no-root
+
+WORKDIR $AIRFLOW_HOME

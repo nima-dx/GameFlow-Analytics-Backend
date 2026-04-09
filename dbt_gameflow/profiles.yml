@@ -1,0 +1,15 @@
+dbt_gameflow:
+  outputs:
+    dev:
+      dataset: analytics_dataset
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      # keyfile: '{{ env_var(''GOOGLE_APPLICATION_CREDENTIALS'') }}'
+      keyfile: /app/gcp-credentials.json
+      location: US
+      method: service-account
+      priority: interactive
+      project: le-wagon-data-atelier
+      threads: 2
+      type: bigquery
+  target: dev
