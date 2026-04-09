@@ -2,6 +2,10 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode, col
 import os
 from pathlib import Path
+import sys
+
+input_path = sys.argv[1]
+output_path = sys.argv[2]
 
 print("PROCESSED_BUCKET =", os.getenv("PROCESSED_BUCKET"))
 print("GOOGLE_APPLICATION_CREDENTIALS =", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
