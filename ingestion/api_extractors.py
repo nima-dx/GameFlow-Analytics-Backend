@@ -190,6 +190,9 @@ def extract_league_all_events():
         if league.get("strLeague") in target_leagues:
             league_ids.append(league.get("idLeague"))
 
+    # Get list of existing JSON files
+    existing_files = list_json_files()
+
     # For each league, read its seasons file and build URLs
     for league_id in league_ids:
         seasons_file = Path(output_dir) / f"seasons-{league_id}.json"
@@ -209,12 +212,16 @@ def extract_league_all_events():
             if season_id in target_seasons:
                 src_url = f"schedule/league/{league_id}/{season_id}"
                 dest_file_name = f"events-{league_id}-{season_id}.json"
-                write_json(src_url, dest_file_name)
+                if dest_file_name not in existing_files:
+                    write_json(src_url, dest_file_name)
 
 
 def extract_event_timeline_data():
     # Find all files that start with "events-" in output_dir
     events_files = Path(output_dir).glob("events-*.json")
+
+    # Get list of existing JSON files
+    existing_files = list_json_files()
 
     for events_file in events_files:
         # Read the events file
@@ -228,12 +235,16 @@ def extract_event_timeline_data():
                 # Build URL and call write_json for each event
                 src_url = f"lookup/event_timeline/{event_id}"
                 dest_file_name = f"event-timeline-{event_id}.json"
-                write_json(src_url, dest_file_name)
+                if dest_file_name not in existing_files:
+                    write_json(src_url, dest_file_name)
 
 
 def extract_event_stats_data():
     # Find all files that start with "events-" in output_dir
     events_files = Path(output_dir).glob("events-*.json")
+
+    # Get list of existing JSON files
+    existing_files = list_json_files()
 
     for events_file in events_files:
         # Read the events file
@@ -247,4 +258,26 @@ def extract_event_stats_data():
                 # Build URL and call write_json for each event
                 src_url = f"lookup/event_stats/{event_id}"
                 dest_file_name = f"event-stats-{event_id}.json"
-                write_json(src_url, dest_file_name)
+                if dest_file_name not in existing_files:
+                    write_json(src_url, dest_file_name)
+
+
+def list_json_files():
+    """List all JSON files in the output directory.
+
+    Returns:
+        list: A sorted list of JSON file names in the output directory.
+    """
+    json_files = []
+    output_path = Path(output_dir)
+
+    # Check if the directory exists
+    if not output_path.exists():
+        print(f"Directory not found: {output_dir}")
+        return json_files
+
+    # Find all JSON files in the directory
+    for json_file in output_path.glob("*.json"):
+        json_files.append(json_file.name)
+
+    return sorted(json_files)
