@@ -5,7 +5,6 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.empty import EmptyOperator
 
 from ingestion.api_extractors import (
-    fetch_and_save_leagues,
     extract_leagues_data,
     extract_teams_data,
     extract_players_data,
@@ -13,7 +12,6 @@ from ingestion.api_extractors import (
     extract_league_all_events,
     extract_event_timeline_data,
     extract_event_stats_data,
-    entity_caller
 )
 
 
@@ -21,7 +19,7 @@ from ingestion.api_extractors import (
 with DAG(
     dag_id="api_ingest",
     description="Fetch leagues data from TheSportsDB API and save to JSON file",
-    start_date=datetime(2026,4,6),
+    start_date=datetime(2026,4,9),
     schedule="@daily",
     catchup=True
 ) as dag:
@@ -66,8 +64,9 @@ with DAG(
         trigger_rule="one_success"
     )
 
-    # tasks hierachy:
-    # extract_leagues_task >> extract_teams_task >> extract_players_task >> extract_seasons_task >> extract_events_task >> extract_event_timeline_task >> extract_event_stats_task >> end_task
-
-   # tasks hierachy:
+    # Task hierarchy
     extract_leagues_task >> end_task
+
+    # Task hierarchy
+    # extract_event_timeline_task = PythonOperator(
+    # extract_leagues_task >> extract_teams_task >> extract_players_task >> extract_seasons_task >> extract_events_task >>  extract_event_timeline_task >> extract_event_stats_task >> end_task
