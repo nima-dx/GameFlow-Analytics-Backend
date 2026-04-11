@@ -37,17 +37,12 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
       - AIRFLOW_CONN_GOOGLE_CLOUD_CONNECTION=google-cloud-platform://?key_path=/app/gcp-credentials.json&scope=https://www.googleapis.com/auth/cloud-platform&project=le-wagon-data-atelier
       - PYTHONPATH=/app:$PYTHONPATH
-      - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark:7077
-      - DBT_HOME=/app/dbt_gameflow
     volumes:
       - ./airflow/dags:/app/airflow/dags
       - ./airflow/data:/app/airflow/data
       - ./airflow/logs:/app/airflow/logs
       - ./ingestion:/app/ingestion
-      - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
-      - ./spark_jobs:/app/spark_jobs
-      - ./jars:/app/jars
-      - .dbt_gameflow:/app/dbt_gameflow
+      - ~/.gcp_keys/le-wagon-de-bootcamp.json:/app/gcp-credentials.json:ro
     tty: true
     stdin_open: true
 
@@ -70,18 +65,13 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
       - AIRFLOW_CONN_GOOGLE_CLOUD_CONNECTION=google-cloud-platform://?key_path=/app/gcp-credentials.json&scope=https://www.googleapis.com/auth/cloud-platform&project=le-wagon-data-atelier
       - PYTHONPATH=/app:$PYTHONPATH
-      - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark:7077
-      - DBT_HOME=/app/dbt_gameflow
     volumes:
       - ./airflow/dags:/app/airflow/dags
       - ./airflow/data:/app/airflow/data
       - ./airflow/logs:/app/airflow/logs
       - ./spark_jobs:/app/spark_jobs
       - ./ingestion:/app/ingestion
-      - ./jars:/app/jars #for spark gcs connector
-      - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
-      - .dbt_gameflow:/app/dbt_gameflow
-
+      - ~/.gcp_keys/le-wagon-de-bootcamp.json:/app/gcp-credentials.json:ro
     ports:
       - "8080:8080"
     healthcheck:
@@ -92,32 +82,13 @@ services:
     tty: true
     stdin_open: true
 
-  spark-master:
+  spark:
     image: apache/spark:3.5.0
-    container_name: spark-master
-    hostname: spark-master
+    container_name: spark
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
-    volumes:
-      - ./spark_jobs:/app/spark_jobs
-      - ./jars:/app/jars
-      - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
+      - SPARK_MODE=master
     ports:
       - "7077:7077"
       - "8081:8080"
-    command: >
-      /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
-  spark-worker:
-    image: apache/spark:3.5.0
-    container_name: spark-worker
-    hostname: spark-worker
-    depends_on:
-      - spark-master
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
     volumes:
       - ./spark_jobs:/app/spark_jobs
-      - ./jars:/app/jars
-      - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
-    command: >
-      /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077

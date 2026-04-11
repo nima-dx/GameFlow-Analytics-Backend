@@ -1,33 +1,24 @@
 from airflow import DAG
-from airflow.operators.bash import BashOperator
-from datetime import datetime, timedelta
-from pathlib import Path
+from datetime import datetime
+from airflow_dbt.operators.dbt_operator import DbtRunOperator
 import os
 
-# Resolves to project root regardless of who runs it
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-ENV_FILE = PROJECT_ROOT / ".env"
-DBT_PROJECT_DIR = PROJECT_ROOT / "dbt_gameflow"
+DBT_DIR = os.environ.get("DBT_HOME")
 
-
-
-print(ENV_FILE)
-# print(PROJECT_ROOT)
+if not DBT_DIR:
+    raise ValueError("DBT_HOME environment variable is not set")
 
 with DAG(
-    dag_id="dbt_gameflow",
+    dag_id="dbt_dag_1",
     description="creates most_leagues_in_sport dbt model in analytics dataset",
     start_date=datetime(2026, 4, 1),
     schedule="@daily",
     catchup=False,
 ) as dag:
 
-    # print(os.environ.get("GCP_PROJECT_ID"))
-    # print(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"))
-    dbt_run = BashOperator(
+    dbt_run = DbtRunOperator(
         task_id="dbt_run_most_leagues",
-        bash_command="source /app/.env && dbt run --select most_leagues_in_sport --project-dir /app/dbt_gameflow --profiles-dir /app/dbt_gameflow"
-
+        dir=DBT_DIR,
+        select="most_leagues_in_sport",
+        profiles_dir=DBT_DIR,
     )
-
-    dbt_run
