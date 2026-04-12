@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import explode, col,trim,current_timestamp,regexp_replace,when,explode,input_file_name
+from pyspark.sql.functions import explode, col,trim,current_timestamp,regexp_replace,when,explode,to_timestamp,input_file_name,to_date
 import os
 from pathlib import Path
 import sys
@@ -30,11 +30,11 @@ spark = (
 # Input path (bucket 1)
 #input_path = "/app/spark_jobs/data/leagues.json"
 #input_path=os.getenv("RAW_BUCKET")
-input_path="gs://gameflow-ingestion-raw/event-stats*.json"
+input_path="gs://gameflow-ingestion-raw/players*.json"
 
 # Output path (bucket 2)
-output_path = f"{os.getenv('PROCESSED_BUCKET')}/event_stats"
-output_path="gs://gameflow-ingestion-processed/event_stats"
+output_path = f"{os.getenv('PROCESSED_BUCKET')}/players"
+output_path="gs://gameflow-ingestion-processed/players"
 
 # Read parquet
 #df = spark.read.parquet(input_path)
@@ -55,23 +55,26 @@ df = spark.read.option("multiline", "true").json(input_path)
 
 df_flat = (
     df
-    .select(explode(col("lookup")).alias("stat"))
+    .select(explode(col("list")).alias("player"))
     .select(
-        trim(col("stat.idStatistic")).cast("long").alias("statistic_id"),
-        trim(col("stat.idEvent")).cast("long").alias("event_id"),
-        trim(col("stat.idApiFootball")).cast("long").alias("api_football_id"),
-        trim(col("stat.strEvent")).alias("event_name"),
-        trim(col("stat.strStat")).alias("stat_name"),
-        when(trim(col("stat.intHome")) == "", None)
-            .otherwise(regexp_replace(trim(col("stat.intHome")), "%", "").cast("double"))
-            .alias("home_value"),
-        when(trim(col("stat.intAway")) == "", None)
-            .otherwise(regexp_replace(trim(col("stat.intAway")), "%", "").cast("double"))
-            .alias("away_value"),
+        trim(col("player.idPlayer")).cast("long").alias("player_id"),
+        trim(col("player.strPlayer")).alias("player_name"),
+        trim(col("player.idTeam")).cast("long").alias("team_id"),
+        trim(col("player.strTeam")).alias("team_name"),
+        trim(col("player.strThumb")).alias("thumb_url"),
+        trim(col("player.strCutout")).alias("cutout_url"),
+        trim(col("player.strRender")).alias("render_url"),
+        #to_date(col("player.dateBorn"), "yyyy-MM-dd").alias("date_of_birth"),
+        trim(col("player.dateBorn")).alias("date_of_birth"),
+        trim(col("player.strPosition")).alias("position_name"),
         input_file_name().alias("source_file"),
         current_timestamp().alias("ingested_at"),
     )
+    .dropDuplicates()
+    .filter(col("player_id").isNotNull())
 )
+
+
 
 print(f"Read from local file: {input_path}")
 print(f"Wrote to bucket: {output_path}")
