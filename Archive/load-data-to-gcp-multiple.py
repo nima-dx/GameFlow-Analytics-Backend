@@ -29,7 +29,7 @@ json_files = glob.glob(f"{DATA_DIR}/*.json") if os.path.exists(DATA_DIR) else []
 
 with DAG(
     "load_multiple",
-    start_date=datetime(2026,4,9),
+    start_date=datetime(2026,4,6),
     schedule="@daily",
     catchup=False,
 ) as dag:
@@ -57,7 +57,7 @@ with DAG(
     process_task = PythonOperator(
         task_id='process_files',
         python_callable=process_files,
-        op_args=['{{ task_instance.xcom_pull(task_ids="list_gcs_files") }}']
+        op_args=['{{ task_instance.xcom_pull(task_ids="list_gcs_files") }}'],
     )
 
     upload_tasks = []
@@ -98,4 +98,4 @@ with DAG(
         process_task >> upload_task
 
     # Connect the chain: sensor -> list GCS files -> process files -> upload tasks
-    wait_for_transform_task >> list_gcs_files >> process_task
+    # wait_for_transform_task >> list_gcs_files >> process_task >> upload_task
