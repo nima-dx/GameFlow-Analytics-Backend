@@ -26,7 +26,8 @@ with DAG(
     # print(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"))
     dbt_run = BashOperator(
         task_id="dbt_run_most_leagues",
-        bash_command="source /app/.env && dbt run --select most_leagues_in_sport --project-dir /app/dbt_gameflow --profiles-dir /app/dbt_gameflow"
+        #bash_command="source /app/.env && dbt run --select most_leagues_in_sport --project-dir /app/dbt_gameflow --profiles-dir /app/dbt_gameflow"
+        bash_command="dbt run --select most_leagues_in_sport --project-dir /app/dbt_gameflow --profiles-dir /app/dbt_gameflow"
 
     )
 
