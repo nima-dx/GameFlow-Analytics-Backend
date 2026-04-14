@@ -7,6 +7,7 @@ ENV AIRFLOW_HOME=/app/airflow
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV SPARK_HOME=/opt/spark
 ENV PATH="${SPARK_HOME}/bin:${PATH}"
+ENV DBT_HOME=/app/dbt_gameflow
 
 RUN apt-get update && apt-get install -y \
     curl \
@@ -21,6 +22,7 @@ RUN chmod +x airflow/scripts/entrypoint.sh
 
 COPY pyproject.toml poetry.lock ./
 COPY ingestion ./ingestion
+COPY dbt_gameflow ./dbt_gameflow
 
 RUN pip3 install --upgrade --no-cache-dir pip \
     && pip3 install poetry \

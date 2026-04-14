@@ -19,6 +19,7 @@ jupyter = "^1.1.1"
 notebook = "^7.5.3"
 requests = "^2.32.0"
 dbt-bigquery = ">=1.11.1,<2.0.0"
+airflow-dbt="0.4.0"
 python-dotenv = "^1.0.0"
 
 [build-system]

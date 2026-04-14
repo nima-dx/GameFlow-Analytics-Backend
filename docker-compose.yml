@@ -39,6 +39,7 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
       - AIRFLOW_CONN_GOOGLE_CLOUD_CONNECTION=google-cloud-platform://?key_path=/app/gcp-credentials.json&scope=https://www.googleapis.com/auth/cloud-platform&project=le-wagon-data-atelier
       - PYTHONPATH=/app:$PYTHONPATH
+      - DBT_HOME=/app/dbt_gameflow
       - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark-master:7077
     volumes:
       - ./airflow/dags:/app/airflow/dags
@@ -48,6 +49,7 @@ services:
       - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
       - ./spark_jobs:/app/spark_jobs
       - ./jars:/app/jars
+      - .dbt_gameflow:/app/dbt_gameflow
     tty: true
     stdin_open: true
 
@@ -72,6 +74,7 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
       - AIRFLOW_CONN_GOOGLE_CLOUD_CONNECTION=google-cloud-platform://?key_path=/app/gcp-credentials.json&scope=https://www.googleapis.com/auth/cloud-platform&project=le-wagon-data-atelier
       - PYTHONPATH=/app:$PYTHONPATH
+      - DBT_HOME=/app/dbt_gameflow
       - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark-master:7077
     volumes:
       - ./airflow/dags:/app/airflow/dags
@@ -81,6 +84,8 @@ services:
       - ./ingestion:/app/ingestion
       - ./jars:/app/jars #for spark gcs connector
       - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
+      - .dbt_gameflow:/app/dbt_gameflow
+
     ports:
       - "8080:8080"
     healthcheck:
