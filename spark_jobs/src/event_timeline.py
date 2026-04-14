@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import explode, col,trim,current_timestamp,regexp_replace,when,explode,input_file_name
+from pyspark.sql.functions import explode, col,trim,current_timestamp,regexp_replace,when,explode,input_file_name,to_date
 import os
 from pathlib import Path
 import sys
@@ -30,11 +30,11 @@ spark = (
 # Input path (bucket 1)
 #input_path = "/app/spark_jobs/data/leagues.json"
 #input_path=os.getenv("RAW_BUCKET")
-input_path="gs://gameflow-ingestion-raw/event-stats*.json"
+input_path="gs://gameflow-ingestion-raw/event-timeline*.json"
 
 # Output path (bucket 2)
-output_path = f"{os.getenv('PROCESSED_BUCKET')}/event_stats"
-output_path="gs://gameflow-ingestion-processed/event_stats"
+output_path = f"{os.getenv('PROCESSED_BUCKET')}/event_timeline"
+output_path="gs://gameflow-ingestion-processed/event_timeline"
 
 # Read parquet
 #df = spark.read.parquet(input_path)
@@ -55,21 +55,34 @@ df = spark.read.option("multiline", "true").json(input_path)
 
 df_flat = (
     df
-    .select(explode(col("lookup")).alias("stat"))
+    .select(explode(col("lookup")).alias("timeline"))
     .select(
-        trim(col("stat.idStatistic")).cast("long").alias("statistic_id"),
-        trim(col("stat.idEvent")).cast("long").alias("event_id"),
-        trim(col("stat.idApiFootball")).cast("long").alias("api_football_id"),
-        trim(col("stat.strEvent")).alias("event_name"),
-        trim(col("stat.strStat")).alias("stat_name"),
-        when(trim(col("stat.intHome")) == "", None)
-            .otherwise(regexp_replace(trim(col("stat.intHome")), "%", "").cast("double"))
-            .alias("home_value"),
-        when(trim(col("stat.intAway")) == "", None)
-            .otherwise(regexp_replace(trim(col("stat.intAway")), "%", "").cast("double"))
-            .alias("away_value"),
+        trim(col("timeline.idTimeline")).cast("long").alias("timeline_id"),
+        trim(col("timeline.idEvent")).cast("long").alias("event_id"),
+        trim(col("timeline.idAPIfootball")).cast("long").alias("api_football_id"),
+        trim(col("timeline.strTimeline")).alias("timeline_type"),
+        trim(col("timeline.strTimelineDetail")).alias("timeline_detail"),
+        trim(col("timeline.strHome")).alias("is_home"),
+        trim(col("timeline.strEvent")).alias("event_name"),
+        trim(col("timeline.idPlayer")).cast("long").alias("player_id"),
+        trim(col("timeline.strPlayer")).alias("player_name"),
+        trim(col("timeline.idAssist")).cast("long").alias("assist_id"),
+        trim(col("timeline.strAssist")).alias("assist_name"),
+        trim(col("timeline.intTime")).cast("int").alias("minute"),
+        trim(col("timeline.strPeriod")).alias("period"),
+        trim(col("timeline.idTeam")).cast("long").alias("team_id"),
+        trim(col("timeline.strTeam")).alias("team_name"),
+        trim(col("timeline.strComment")).alias("comment"),
+        to_date(col("timeline.dateEvent"), "yyyy-MM-dd").alias("event_date"),
+        trim(col("timeline.strSeason")).alias("season"),
+        trim(col("timeline.strCutout")).alias("player_cutout"),
         input_file_name().alias("source_file"),
         current_timestamp().alias("ingested_at"),
+    )
+    .dropDuplicates()
+    .filter(
+        col("timeline_id").isNotNull() &
+        col("event_id").isNotNull()
     )
 )
 

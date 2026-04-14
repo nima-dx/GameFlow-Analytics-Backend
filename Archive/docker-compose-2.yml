@@ -23,8 +23,6 @@ services:
     restart: on-failure
     depends_on:
       - postgres
-      - spark-master
-      - spark-worker
     healthcheck:
       test: ["CMD-SHELL", "poetry run airflow jobs check --job-type SchedulerJob --local || exit 1"]
       interval: 30s
@@ -39,8 +37,6 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
       - AIRFLOW_CONN_GOOGLE_CLOUD_CONNECTION=google-cloud-platform://?key_path=/app/gcp-credentials.json&scope=https://www.googleapis.com/auth/cloud-platform&project=le-wagon-data-atelier
       - PYTHONPATH=/app:$PYTHONPATH
-      - DBT_HOME=/app/dbt_gameflow
-      - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark-master:7077
     volumes:
       - ./airflow/dags:/app/airflow/dags
       - ./airflow/data:/app/airflow/data
@@ -49,7 +45,6 @@ services:
       - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
       - ./spark_jobs:/app/spark_jobs
       - ./jars:/app/jars
-      - .dbt_gameflow:/app/dbt_gameflow
     tty: true
     stdin_open: true
 
@@ -62,8 +57,6 @@ services:
     depends_on:
       - postgres
       - scheduler
-      - spark-master
-      - spark-worker
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:$POSTGRES_PASSWORD@postgres:5432/db
@@ -74,8 +67,6 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
       - AIRFLOW_CONN_GOOGLE_CLOUD_CONNECTION=google-cloud-platform://?key_path=/app/gcp-credentials.json&scope=https://www.googleapis.com/auth/cloud-platform&project=le-wagon-data-atelier
       - PYTHONPATH=/app:$PYTHONPATH
-      - DBT_HOME=/app/dbt_gameflow
-      - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark-master:7077
     volumes:
       - ./airflow/dags:/app/airflow/dags
       - ./airflow/data:/app/airflow/data
@@ -84,8 +75,6 @@ services:
       - ./ingestion:/app/ingestion
       - ./jars:/app/jars #for spark gcs connector
       - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
-      - .dbt_gameflow:/app/dbt_gameflow
-
     ports:
       - "8080:8080"
     healthcheck:
@@ -96,32 +85,17 @@ services:
     tty: true
     stdin_open: true
 
-  spark-master:
+  spark:
     image: apache/spark:3.5.0
-    container_name: spark-master
-    hostname: spark-master
+    container_name: spark
     environment:
+      - SPARK_MODE=master
       - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
-    volumes:
-      - ./spark_jobs:/app/spark_jobs
-      - ./jars:/app/jars
-      - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
     ports:
       - "7077:7077"
       - "8081:8080"
-    command: >
-      /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
-  spark-worker:
-    image: apache/spark:3.5.0
-    container_name: spark-worker
-    hostname: spark-worker
-    depends_on:
-      - spark-master
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-credentials.json
     volumes:
       - ./spark_jobs:/app/spark_jobs
       - ./jars:/app/jars
       - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
-    command: >
-      /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    command: ["/bin/bash", "-c", "tail -f /dev/null"]
