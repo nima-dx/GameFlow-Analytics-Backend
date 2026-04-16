@@ -1,9 +1,47 @@
 version: 2
 
 sources:
-  - name: raw_dataset
+  - name: raw
     database: "{{ env_var('GCP_PROJECT_ID') }}"
     schema: raw_dataset
     tables:
+      - name: event_stats
+        identifier: event_stats
+        description: "Event statistics data"
+        meta:
+          alias: event_stats
+      - name: event_timeline
+        identifier: event_timeline
+        description: "Event timeline data"
+        meta:
+          alias: event_timeline
+      - name: events
+        identifier: events
+        description: "Events data"
+        meta:
+          alias: events
       - name: leagues
+        identifier: leagues
+        description: "Leagues data"
+        meta:
+          alias: leagues
+      - name: players
+        identifier: players
+        description: "Players data"
+        meta:
+          alias: players
+      - name: seasons
+        identifier: seasons
+        description: "Seasons data"
+        meta:
+          alias: seasons
+      - name: teams
+        identifier: teams
+        description: "Teams data"
+        meta:
+          alias: teams
       - name: grandprix
+        identifier: grandprix
+        description: "Grand Prix data"
+        meta:
+          alias: grandprix
