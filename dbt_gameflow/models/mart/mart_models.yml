@@ -1,13 +1,8 @@
 version: 2
 
 models:
-  - name: most_leagues_in_sport
-    description: "Top 10 sports ranked by number of leagues"
-    columns:
-      - name: strSport
-        description: "Sport name"
-      - name: most_league
-        description: "Count of distinct leagues per sport"
+  - name: team_performance_metrics
+    description: "Mart model for team performance metrics in football"
   - name: grandprix
     description: "The f1 grandprix of the 2026 season"
     columns:
