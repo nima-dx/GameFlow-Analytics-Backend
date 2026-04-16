@@ -1,7 +1,12 @@
+[0m15:23:22.893240 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x704ae065faa0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x704ade757860>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x704ae19abfb0>]}
+
+
+[0m15:23:22.897006 [info ] [MainThread]: Running with dbt=1.11.7
+[0m15:23:22.897746 [debug] [MainThread]: running dbt with arguments {'warn_error': 'None', 'use_colors': 'True', 'fail_fast': 'False', 'empty': 'False', 'version_check': 'True', 'no_print': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'debug': 'False', 'static_parser': 'True', 'invocation_command': 'dbt run --profiles-dir /app/dbt_gameflow --select most_leagues_in_sport', 'profiles_dir': '/app/dbt_gameflow', 'write_json': 'True', 'quiet': 'False', 'introspect': 'True', 'target_path': 'None', 'send_anonymous_usage_stats': 'True', 'log_format': 'default', 'partial_parse': 'True', 'printer_width': '80', 'log_cache_events': 'False', 'log_path': 'logs', 'indirect_selection': 'eager', 'cache_selected_only': 'False', 'use_experimental_parser': 'False'}
+[0m15:23:22.898282 [error] [MainThread]: Encountered an error:
 [0m19:00:02.971476 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7bb98bbb4710>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7bb989798980>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7bb988bc5970>]}
 
 
-============================== 19:00:02.974818 | b0f87592-a788-4803-b2c7-63c004042f4a ==============================
 [0m19:00:02.974818 [info ] [MainThread]: Running with dbt=1.11.8
 [0m19:00:02.975359 [debug] [MainThread]: running dbt with arguments {'write_json': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'profiles_dir': '/app/dbt_gameflow', 'introspect': 'True', 'partial_parse': 'True', 'use_experimental_parser': 'False', 'invocation_command': 'dbt run --profiles-dir /app/dbt_gameflow --select most_leagues_in_sport', 'quiet': 'False', 'debug': 'False', 'no_print': 'None', 'log_path': 'logs', 'use_colors': 'True', 'log_format': 'default', 'static_parser': 'True', 'indirect_selection': 'eager', 'version_check': 'True', 'target_path': 'None', 'log_cache_events': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'empty': 'False', 'cache_selected_only': 'False', 'send_anonymous_usage_stats': 'True', 'printer_width': '80'}
 [0m19:00:02.975820 [error] [MainThread]: Encountered an error:
@@ -9,6 +14,11 @@ Runtime Error
   No dbt_project.yml found at expected path /app/dbt_gameflow/dbt_project.yml
   Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
   
+[0m15:23:22.899561 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": false, "command_wall_clock_time": 0.07164847, "process_in_blocks": "320", "process_kernel_time": 0.332198, "process_mem_max_rss": "136768", "process_out_blocks": "22464", "process_user_time": 4.163487}
+[0m15:23:22.900195 [debug] [MainThread]: Command `dbt run` failed at 15:23:22.900078 after 0.07 seconds
+[0m15:23:22.900549 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x704adf823410>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x704ade77cdd0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x704ae3eeec30>]}
+[0m15:23:22.900955 [debug] [MainThread]: Flushing usage events
+[0m15:23:23.498801 [debug] [MainThread]: An error was encountered while trying to flush usage events
 [0m19:00:02.976738 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": false, "command_wall_clock_time": 0.060970258, "process_in_blocks": "264", "process_kernel_time": 0.225576, "process_mem_max_rss": "137020", "process_out_blocks": "22968", "process_user_time": 3.72753}
 [0m19:00:02.977221 [debug] [MainThread]: Command `dbt run` failed at 19:00:02.977125 after 0.06 seconds
 [0m19:00:02.977570 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7bb988dfc9b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7bb989a800b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7bb989b06630>]}
