@@ -168,9 +168,6 @@ def extract_league_all_events():
         if league.get("strLeague") in target_leagues:
             league_ids.append(league.get("idLeague"))
 
-    # Get list of existing JSON files
-    existing_files = list_json_files()
-
     # For each league, read its seasons file and build URLs
     for league_id in league_ids:
         seasons_file = Path(output_dir) / f"seasons-{league_id}.json"
@@ -190,8 +187,7 @@ def extract_league_all_events():
             if season_id in target_seasons:
                 src_url = f"schedule/league/{league_id}/{season_id}"
                 dest_file_name = f"events-{league_id}-{season_id}.json"
-                if dest_file_name not in existing_files:
-                    write_json(src_url, dest_file_name)
+                write_json(src_url, dest_file_name)
 
 
 def extract_event_timeline_data():

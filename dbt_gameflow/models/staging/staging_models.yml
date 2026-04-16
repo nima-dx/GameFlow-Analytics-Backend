@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: stg_event_timeline
+    description: "Staging model for event timeline data"
+
+  - name: stg_leagues
+    description: "Staging model for league reference data"
+
+  - name: stg_event_stats
+    description: "Staging model for event statistics data"
+
+  - name: stg_players
+    description: "Staging model for player reference data"
+
+  - name: stg_events
+    description: "Staging model for event metadata"
+
+  - name: stg_seasons
+    description: "Staging model for season reference data"
+
+  - name: stg_teams
+    description: "Staging model for team reference data"
+
+
+
+
+    # - name: stg_raw_sales
+    # description: "Staging model for sales transactions with order details and revenue information"
+    # columns:
+    #   - name: date_date
+    #     description: "Transaction date"
+    #     tests:
+    #       - not_null
+    #   - name: orders_id
+    #     description: "Unique identifier for each order"
+    #     tests:
+    #       - not_null
+    #   - name: products_id
+    #     description: "Product identifier linked to the order (renamed from pdt_id)"
+    #     tests:
+    #       - not_null
+    #   - name: revenue
+    #     description: "Revenue amount for the transaction"
+    #     tests:
+    #       - not_null
+    #   - name: quantity
+    #     description: "Quantity of products sold"
+    #     tests:
