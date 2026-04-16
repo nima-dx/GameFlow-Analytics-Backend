@@ -26,10 +26,10 @@ with DAG(
     catchup=True
 ) as dag:
 
-    extract_leagues_task = PythonOperator(
-        task_id="extract_leagues_data",
-        python_callable=extract_leagues_data,
-    )
+    # extract_leagues_task = PythonOperator(
+    #     task_id="extract_leagues_data",
+    #     python_callable=extract_leagues_data,
+    # )
 
     # extract_teams_task = PythonOperator(
     #     task_id="extract_teams_data",

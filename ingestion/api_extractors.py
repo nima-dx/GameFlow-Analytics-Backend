@@ -11,12 +11,10 @@ import requests
 # Global variables
 base_url = "https://www.thesportsdb.com/api/v2/json/"
 api_key = os.getenv("API_KEY", "149076")
-# output_dir = "/app/airflow/data/api-ingest"
+output_dir = "/app/airflow/data/api-ingest"
 
-output_dir = '/home/arthurdeetu/code/joaquin-ortega84/GameFlow-Analytics-Backend/joaquin/api_extractor_test'
 
-F1_LEAGUE_ID = 4370
-F1_SEASON = "2026"
+
 
 
 
@@ -246,6 +244,9 @@ def extract_event_stats_data():
 
 
 def extract_f1_calendar():
+    F1_LEAGUE_ID = 4370
+    F1_SEASON = "2026"
+
     url = (
         f"https://www.thesportsdb.com/api/v1/json/{api_key}/eventsseason.php"
         f"?id={F1_LEAGUE_ID}&s={F1_SEASON}"
@@ -276,6 +277,8 @@ def extract_f1_calendar():
 
 
 def extract_f1_results():
+    F1_LEAGUE_ID = 4370
+    F1_SEASON = "2026"
     calendar_file = Path(output_dir) / f"f1_calendar_{F1_SEASON}.json"
     if not calendar_file.exists():
         print(f"F1 calendar file not found at {calendar_file}. Run 'f1 calendar' first.")
