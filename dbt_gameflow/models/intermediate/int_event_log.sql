@@ -82,7 +82,7 @@ select
   sum(case when stat_name = 'Yellow Cards' then value end) as Yellow_Cards,
   sum(case when stat_name = 'Red Cards' then value end) as Red_Cards,
   sum(case when stat_name = 'expected_goals' then value end) as expected_goals,
-  sum(case when stat_name = 'point' then value end) as point,
+  sum(case when stat_name = 'point' then value end) as points,
   sum(case when stat_name = 'Ball Possession' then value end) as Ball_Possession
 from
 (

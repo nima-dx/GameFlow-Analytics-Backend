@@ -339,3 +339,19 @@ Runtime Error
 [0m18:28:05.120743 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x772fd13c8d70>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x772fd173bb60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x772fd23b7290>]}
 [0m18:28:05.121273 [debug] [MainThread]: Flushing usage events
 [0m18:28:05.643535 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m17:13:15.545217 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f574bd6ce00>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f574a4eff20>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f574ad86c30>]}
+
+
+============================== 17:13:15.550209 | d348eff1-d4f8-4252-a8dc-69b25263db63 ==============================
+[0m17:13:15.550209 [info ] [MainThread]: Running with dbt=1.11.8
+[0m17:13:15.550844 [debug] [MainThread]: running dbt with arguments {'log_format': 'default', 'printer_width': '80', 'profiles_dir': '/home/nima.lewagon.de/.dbt', 'write_json': 'True', 'empty': 'False', 'partial_parse': 'True', 'fail_fast': 'False', 'debug': 'False', 'use_colors': 'True', 'version_check': 'True', 'log_path': 'logs', 'no_print': 'None', 'indirect_selection': 'eager', 'quiet': 'False', 'introspect': 'True', 'log_cache_events': 'False', 'send_anonymous_usage_stats': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'warn_error': 'None', 'cache_selected_only': 'False', 'static_parser': 'True', 'use_experimental_parser': 'False', 'invocation_command': 'dbt run --select stg_events'}
+[0m17:13:15.551431 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path /home/nima.lewagon.de/code/nima-dx/GameFlow-Analytics-Backend/dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m17:13:15.552440 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": false, "command_wall_clock_time": 0.07168104, "process_in_blocks": "8", "process_kernel_time": 0.113839, "process_mem_max_rss": "134008", "process_out_blocks": "8", "process_user_time": 2.96881}
+[0m17:13:15.552998 [debug] [MainThread]: Command `dbt run` failed at 17:13:15.552891 after 0.07 seconds
+[0m17:13:15.553426 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f5749e3bec0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f574cdfef60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f574bd6ce00>]}
+[0m17:13:15.553841 [debug] [MainThread]: Flushing usage events
+[0m17:13:15.940327 [debug] [MainThread]: An error was encountered while trying to flush usage events
