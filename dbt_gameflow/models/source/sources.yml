@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: raw_dataset
-    database: "{{ env_var('GCP_PROJECT_ID') }}"
+    database: le-wagon-data-atelier
     schema: raw_dataset
     tables:
       - name: leagues

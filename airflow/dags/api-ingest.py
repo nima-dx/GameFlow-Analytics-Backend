@@ -12,6 +12,8 @@ from ingestion.api_extractors import (
     extract_league_all_events,
     extract_event_timeline_data,
     extract_event_stats_data,
+    extract_f1_calendar,
+    extract_f1_results
 )
 
 
@@ -59,14 +61,28 @@ with DAG(
     #     python_callable=extract_event_stats_data,
     # )
 
+
+    extract_f1_calendar_task = PythonOperator(
+        task_id="extract_f1_calendar",
+        python_callable=extract_f1_calendar,
+    )
+
+    extract_f1_results_task = PythonOperator(
+        task_id="extract_f1_results",
+        python_callable=extract_f1_results,
+    )
+
     end_task = EmptyOperator(
         task_id="end",
         trigger_rule="one_success"
     )
 
     # Task hierarchy
-    extract_leagues_task >> end_task
+    # extract_leagues_task >> end_task
 
     # Task hierarchy
     # extract_event_timeline_task = PythonOperator(
     # extract_leagues_task >> extract_teams_task >> extract_players_task >> extract_seasons_task >> extract_events_task >>  extract_event_timeline_task >> extract_event_stats_task >> end_task
+
+    # Test F1 data extraction
+    extract_f1_calendar_task >> extract_f1_results_task >> end_task
