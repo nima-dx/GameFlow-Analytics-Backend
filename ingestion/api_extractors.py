@@ -3,15 +3,18 @@ import os
 from pathlib import Path
 
 import requests
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv()
+# load_dotenv()
 
 # Global variables
 base_url = "https://www.thesportsdb.com/api/v2/json/"
 api_key = os.getenv("API_KEY", "149076")
 output_dir = "/app/airflow/data/api-ingest"
+
+
+
 
 
 
@@ -168,9 +171,6 @@ def extract_league_all_events():
         if league.get("strLeague") in target_leagues:
             league_ids.append(league.get("idLeague"))
 
-    # Get list of existing JSON files
-    existing_files = list_json_files()
-
     # For each league, read its seasons file and build URLs
     for league_id in league_ids:
         seasons_file = Path(output_dir) / f"seasons-{league_id}.json"
@@ -190,8 +190,7 @@ def extract_league_all_events():
             if season_id in target_seasons:
                 src_url = f"schedule/league/{league_id}/{season_id}"
                 dest_file_name = f"events-{league_id}-{season_id}.json"
-                if dest_file_name not in existing_files:
-                    write_json(src_url, dest_file_name)
+                write_json(src_url, dest_file_name)
 
 
 def extract_event_timeline_data():
@@ -240,6 +239,74 @@ def extract_event_stats_data():
                     write_json(src_url, dest_file_name)
 
 
+def extract_f1_calendar():
+    F1_LEAGUE_ID = 4370
+    F1_SEASON = "2026"
+
+    url = (
+        f"https://www.thesportsdb.com/api/v1/json/{api_key}/eventsseason.php"
+        f"?id={F1_LEAGUE_ID}&s={F1_SEASON}"
+    )
+    response = requests.get(url)
+    response.raise_for_status()
+
+    events = response.json().get("events") or []
+    races = [
+        e for e in events
+        if "grand prix" in e.get("strEvent", "").lower()
+        and "qualifying" not in e.get("strEvent", "").lower()
+        and "practice" not in e.get("strEvent", "").lower()
+        and "sprint" not in e.get("strEvent", "").lower()
+    ]
+
+    if not races:
+        print("No races found.")
+        return
+
+    output_file = Path(output_dir) / f"f1_calendar_{F1_SEASON}.json"
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_file, "w") as f:
+        json.dump(races, f, indent=2)
+
+    print(f"Data saved to {output_file} — {len(races)} races")
+
+
+def extract_f1_results():
+    F1_LEAGUE_ID = 4370
+    F1_SEASON = "2026"
+    calendar_file = Path(output_dir) / f"f1_calendar_{F1_SEASON}.json"
+    if not calendar_file.exists():
+        print(f"F1 calendar file not found at {calendar_file}. Run 'f1 calendar' first.")
+        return
+
+    with open(calendar_file, "r") as f:
+        races = json.load(f)
+
+    completed = [r for r in races if r.get("strStatus") == "Match Finished"]
+    if not completed:
+        print("No completed races found.")
+        return
+
+    all_results = []
+    for race in completed:
+        event_id = race.get("idEvent")
+        url = f"https://www.thesportsdb.com/api/v1/json/{api_key}/eventresults.php?id={event_id}"
+        results = requests.get(url).json().get("results") or []
+        all_results.extend(results)
+        print(f"Fetched {len(results)} results for {race.get('strEvent')}")
+
+    if not all_results:
+        print("No results found.")
+        return
+
+    output_file = Path(output_dir) / f"f1_race_results_{F1_SEASON}.json"
+    with open(output_file, "w") as f:
+        json.dump(all_results, f, indent=2)
+
+    print(f"Data saved to {output_file} — {len(all_results)} rows")
+
+
 def list_json_files():
     """List all JSON files in the output directory.
 
@@ -259,3 +326,8 @@ def list_json_files():
         json_files.append(json_file.name)
 
     return sorted(json_files)
+
+
+# if __name__ == "__main__":
+#     extract_f1_calendar()
+#     extract_f1_results()

@@ -10,6 +10,6 @@ select
         else 'Upcoming'
     end as RaceStatus
 
-from {{ source('raw_dataset', 'grandprix') }}
+from {{ source('raw', 'grandprix') }}
 
 order by dateEvent asc
