@@ -83,7 +83,11 @@ select
   sum(case when stat_name = 'Red Cards' then value end) as Red_Cards,
   sum(case when stat_name = 'expected_goals' then value end) as expected_goals,
 <<<<<<< HEAD
+<<<<<<< HEAD
   sum(case when stat_name = 'point' then value end) as points,
+=======
+  sum(case when stat_name = 'point' then value end) as point,
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
 =======
   sum(case when stat_name = 'point' then value end) as point,
 >>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368

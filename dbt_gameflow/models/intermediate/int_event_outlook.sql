@@ -3,6 +3,7 @@
 with cte_home_events as (
   select
 <<<<<<< HEAD
+<<<<<<< HEAD
     event_id,
     league_name,
     sport_name,
@@ -26,6 +27,8 @@ cte_away_events as (
       {{ ref('stg_events') }}
 ),
 =======
+=======
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
     ev.event_id,
     ev.league_name,
     ev.sport_name,
@@ -49,6 +52,9 @@ cte_away_events as (
   from
       {{ ref('stg_events') }}
 )
+<<<<<<< HEAD
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
+=======
 >>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
 
 cte_timeline as (
@@ -57,7 +63,11 @@ cte_timeline as (
   from
       {{ ref('stg_event_timeline') }}
 <<<<<<< HEAD
+<<<<<<< HEAD
 )
+=======
+),
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
 =======
 ),
 >>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368

@@ -35,7 +35,11 @@ event_log as (
     Red_Cards,
     expected_goals,
 <<<<<<< HEAD
+<<<<<<< HEAD
     points,
+=======
+    [point],
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
 =======
     [point],
 >>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
@@ -71,7 +75,11 @@ select
     sum(ev_lg.Red_Cards) as Red_Cards,
     sum(ev_lg.expected_goals) as expected_goals,
 <<<<<<< HEAD
+<<<<<<< HEAD
     sum(ev_lg.points) as points,
+=======
+    sum(ev_lg.[point]) as point,
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
 =======
     sum(ev_lg.[point]) as point,
 >>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
