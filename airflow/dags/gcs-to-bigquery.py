@@ -161,7 +161,7 @@ dag_f1_calendar = make_dag(
     dag_id="load_f1_calendar_to_bq",
     source_object="f1_calendar_2026.json",
     ndjson_object="tmp/f1_calendar_2026.ndjson",
-    destination_table=f"{PROJECT_ID}.{DATASET_ID}.f1_calendar_2026",
+    destination_table=f"{PROJECT_ID}.{DATASET_ID}.f1_calendar",
     tags=["gcs", "bigquery", "json", "f1"],
 )
 
@@ -169,6 +169,6 @@ dag_f1_results = make_dag(
     dag_id="load_f1_race_results_to_bq",
     source_object="f1_race_results_2026.json",
     ndjson_object="tmp/f1_race_results_2026.ndjson",
-    destination_table=f"{PROJECT_ID}.{DATASET_ID}.race_results_2026",
+    destination_table=f"{PROJECT_ID}.{DATASET_ID}.race_results",
     tags=["gcs", "bigquery", "json", "f1"],
 )

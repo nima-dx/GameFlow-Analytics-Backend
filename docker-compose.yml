@@ -41,6 +41,7 @@ services:
       - PYTHONPATH=/app:$PYTHONPATH
       - DBT_HOME=/app/dbt_gameflow
       - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark-master:7077
+      - GCP_PROJECT_ID=le-wagon-data-atelier
     volumes:
       - ./airflow/dags:/app/airflow/dags
       - ./airflow/data:/app/airflow/data
@@ -49,7 +50,8 @@ services:
       - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
       - ./spark_jobs:/app/spark_jobs
       - ./jars:/app/jars
-      - .dbt_gameflow:/app/dbt_gameflow
+      - ./dbt_gameflow:/app/dbt_gameflow
+      - ./bigquery:/app/bigquery
     tty: true
     stdin_open: true
 
@@ -76,6 +78,7 @@ services:
       - PYTHONPATH=/app:$PYTHONPATH
       - DBT_HOME=/app/dbt_gameflow
       - AIRFLOW_CONN_SPARK_DEFAULT=spark://spark-master:7077
+      - GCP_PROJECT_ID=le-wagon-data-atelier
     volumes:
       - ./airflow/dags:/app/airflow/dags
       - ./airflow/data:/app/airflow/data
@@ -84,7 +87,8 @@ services:
       - ./ingestion:/app/ingestion
       - ./jars:/app/jars #for spark gcs connector
       - ~/.gcp_keys/gameflow-team.json:/app/gcp-credentials.json:ro
-      - .dbt_gameflow:/app/dbt_gameflow
+      - ./dbt_gameflow:/app/dbt_gameflow
+      - ./bigquery:/app/bigquery
 
     ports:
       - "8080:8080"
