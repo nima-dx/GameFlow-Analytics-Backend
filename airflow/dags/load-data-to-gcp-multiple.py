@@ -1,92 +1,101 @@
-from datetime import datetime
+import os
 import json
-import tempfile
+import glob
+from datetime import datetime
 
 from airflow import DAG
+from airflow.sensors.external_task import ExternalTaskSensor
+from airflow.providers.google.cloud.transfers.local_to_gcs import (
+    LocalFilesystemToGCSOperator,
+)
 from airflow.operators.python import PythonOperator
-from airflow.providers.google.cloud.hooks.gcs import GCSHook
-from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+from airflow.providers.google.cloud.operators.gcs import GCSListObjectsOperator
 
-PROJECT_ID = "le-wagon-data-atelier"
-DATASET_ID = "raw_dataset"
-BUCKET_NAME = "gameflow-ingestion-raw"
-LOCATION = "US"
-
-FILES = [
-    {
-        "source": "f1_calendar_2026.json",
-        "ndjson": "tmp/f1_calendar_2026.ndjson",
-        "table": f"{PROJECT_ID}.{DATASET_ID}.raw_f1_calendar_2026",
-        "task_id": "f1_calendar",
-    },
-    {
-        "source": "f1_race_results_2026.json",
-        "ndjson": "tmp/f1_race_results_2026.ndjson",
-        "table": f"{PROJECT_ID}.{DATASET_ID}.raw_f1_race_results_2026",
-        "task_id": "f1_race_results",
-    },
-]
+AIRFLOW_HOME = os.getenv("AIRFLOW_HOME")
+DATA_DIR = f"{AIRFLOW_HOME}/data/api-ingest"
+LOAD_LOG_FILE = f"{AIRFLOW_HOME}/data/load_log.json"
 
 
-def make_convert_fn(source_object, ndjson_object):
-    def convert_json_array_to_ndjson(**kwargs):
-        gcs = GCSHook(gcp_conn_id="google_cloud_connection")
+def process_files(file_list, **context):
+    """Process the list of files from GCS and save to JSON."""
+    with open(LOAD_LOG_FILE, "w") as f:
+        json.dump(file_list, f, indent=2)
+    print(f"Saved {len(file_list)} files to {LOAD_LOG_FILE}")
+    return file_list
 
-        with tempfile.NamedTemporaryFile(mode="w+b", suffix=".json", delete=True) as src_tmp, \
-             tempfile.NamedTemporaryFile(mode="w", suffix=".ndjson", delete=True, encoding="utf-8") as ndjson_tmp:
 
-            gcs.download(
-                bucket_name=BUCKET_NAME,
-                object_name=source_object,
-                filename=src_tmp.name,
-            )
-
-            with open(src_tmp.name, "r", encoding="utf-8") as f:
-                data = json.load(f)
-
-            if not isinstance(data, list):
-                raise ValueError("Expected top-level JSON array.")
-
-            for row in data:
-                ndjson_tmp.write(json.dumps(row, ensure_ascii=False) + "\n")
-
-            ndjson_tmp.flush()
-
-            gcs.upload(
-                bucket_name=BUCKET_NAME,
-                object_name=ndjson_object,
-                filename=ndjson_tmp.name,
-                mime_type="application/x-ndjson",
-            )
-
-    return convert_json_array_to_ndjson
-
+#  all JSON files in the local data directory.
+json_files = glob.glob(f"{DATA_DIR}/*.json") if os.path.exists(DATA_DIR) else []
 
 with DAG(
-    dag_id="load_f1_data_to_bq",
-    start_date=datetime(2026, 4, 16),
-    schedule=None,
+    "load_multiple",
+    start_date=datetime(2026,4,9),
+    schedule="@daily",
     catchup=False,
-    tags=["gcs", "bigquery", "json", "f1"],
 ) as dag:
 
-    for file in FILES:
-        convert = PythonOperator(
-            task_id=f"convert_{file['task_id']}_to_ndjson",
-            python_callable=make_convert_fn(file["source"], file["ndjson"]),
-        )
+    # GCP Configuration
+    BUCKET_NAME = "gameflow-ingestion-raw"
 
-        load = GCSToBigQueryOperator(
-            task_id=f"load_{file['task_id']}_to_bq",
+    wait_for_transform_task = ExternalTaskSensor(
+        task_id="ingest_sensor",
+        external_dag_id="api_ingest",
+        external_task_id="end",
+        allowed_states=["success"],
+        execution_date_fn=lambda dt: dt.replace(hour=0, minute=0, second=0, microsecond=0),
+    )
+
+    # List all files in GCS bucket
+    list_gcs_files = GCSListObjectsOperator(
+        task_id='list_gcs_files',
+        bucket=BUCKET_NAME,
+        delimiter='/',
+        gcp_conn_id="google_cloud_connection"
+    )
+
+    # Process and save the list of files to JSON
+    process_task = PythonOperator(
+        task_id='process_files',
+        python_callable=process_files,
+        op_args=['{{ task_instance.xcom_pull(task_ids="list_gcs_files") }}']
+    )
+
+    upload_tasks = []
+
+    # Helper function to check if file already exists in GCS
+    def file_exists_in_gcs(file_name):
+        """Check if file exists in the saved load log (GCS listing)."""
+        if not os.path.exists(LOAD_LOG_FILE):
+            return False
+        try:
+            with open(LOAD_LOG_FILE, "r") as f:
+                loaded_files = json.load(f)
+                return file_name in loaded_files
+        except:
+            return False
+
+    # Create a LocalFilesystemToGCSOperator task for each JSON file
+    for file_path in json_files:
+        file_name = os.path.basename(file_path)
+
+        # Skip if file has already been loaded in GCS
+        if file_exists_in_gcs(file_name):
+            print(f"Skipping {file_name} - already loaded in GCS")
+            continue
+
+        # Create a valid task_id (replace dots and special chars with underscores)
+        task_id = f"upload_{file_name.replace('.', '_').replace('-', '_')}"
+
+        upload_task = LocalFilesystemToGCSOperator(
+            task_id=task_id,
+            src=file_path,
+            dst=file_name,
             bucket=BUCKET_NAME,
-            source_objects=[file["ndjson"]],
-            destination_project_dataset_table=file["table"],
-            source_format="NEWLINE_DELIMITED_JSON",
-            write_disposition="WRITE_TRUNCATE",
-            create_disposition="CREATE_IF_NEEDED",
-            autodetect=True,
-            gcp_conn_id="google_cloud_connection",
-            location=LOCATION,
+            gcp_conn_id="google_cloud_connection"
         )
 
-        convert >> load
+        upload_tasks.append(upload_task)
+        process_task >> upload_task
+
+    # Connect the chain: sensor -> list GCS files -> process files -> upload tasks
+    wait_for_transform_task >> list_gcs_files >> process_task
