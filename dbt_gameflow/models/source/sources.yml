@@ -3,10 +3,14 @@ version: 2
 sources:
   - name: raw
 <<<<<<< HEAD
+<<<<<<< HEAD
     database: le-wagon-data-atelier
 =======
     database: "{{ env_var('GCP_PROJECT_ID') }}"
 >>>>>>> 48eda7d2824da775670fd5dfb03b3bee3d7408c3
+=======
+    database: "{{ env_var('GCP_PROJECT_ID') }}"
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
     schema: raw_dataset
     tables:
       - name: event_stats

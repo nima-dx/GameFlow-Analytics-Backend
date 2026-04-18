@@ -34,7 +34,11 @@ event_log as (
     Yellow_Cards,
     Red_Cards,
     expected_goals,
+<<<<<<< HEAD
     points,
+=======
+    [point],
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
     Ball_Possession
   from {{ ref('int_event_log') }}
 )
@@ -66,7 +70,11 @@ select
     sum(ev_lg.Yellow_Cards) as Yellow_Cards,
     sum(ev_lg.Red_Cards) as Red_Cards,
     sum(ev_lg.expected_goals) as expected_goals,
+<<<<<<< HEAD
     sum(ev_lg.points) as points,
+=======
+    sum(ev_lg.[point]) as point,
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
     sum(ev_lg.Ball_Possession) as Ball_Possession
 from
     event_outlook ev_lk

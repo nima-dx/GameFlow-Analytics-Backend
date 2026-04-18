@@ -3,7 +3,13 @@ version: 2
 models:
   - name: int_event_log
     description: "Intermediate model for event log data"
+<<<<<<< HEAD
   - name: int_event_outlook
     description: "Intermediate model for event outlook data"
   - name: int_players_timeline
     description: "Intermediate model for players activity"
+=======
+
+  - name: int_event_outlook
+    description: "Intermediate model for event outlook data"
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368

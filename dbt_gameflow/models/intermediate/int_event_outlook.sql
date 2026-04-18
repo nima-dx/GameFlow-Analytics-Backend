@@ -2,6 +2,7 @@
 
 with cte_home_events as (
   select
+<<<<<<< HEAD
     event_id,
     league_name,
     sport_name,
@@ -24,13 +25,42 @@ cte_away_events as (
   from
       {{ ref('stg_events') }}
 ),
+=======
+    ev.event_id,
+    ev.league_name,
+    ev.sport_name,
+    'Home' as homeaway,
+    ev.home_team_name as team_name,
+    ev.venue_name,
+    ev.country_name
+  from
+      {{ ref('stg_events') }}
+),
+
+cte_away_events as (
+  select
+    ev.event_id,
+    ev.league_name,
+    ev.sport_name,
+    'Away' as homeaway,
+    ev.away_team_name as team_name,
+    ev.venue_name,
+    ev.country_name
+  from
+      {{ ref('stg_events') }}
+)
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
 
 cte_timeline as (
   select
     *
   from
       {{ ref('stg_event_timeline') }}
+<<<<<<< HEAD
 )
+=======
+),
+>>>>>>> ad01f62984d1e6a5bd0a8f30719447f7621c1368
 
   select distinct
     ds.event_id,
