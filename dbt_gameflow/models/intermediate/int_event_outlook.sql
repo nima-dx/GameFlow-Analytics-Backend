@@ -24,6 +24,7 @@ cte_away_events as (
   from
       {{ ref('stg_events') }}
 ),
+<<<<<<< HEAD
     ev.event_id,
     ev.league_name,
     ev.sport_name,
@@ -47,6 +48,8 @@ cte_away_events as (
   from
       {{ ref('stg_events') }}
 )
+=======
+>>>>>>> main
 
 cte_timeline as (
   select
@@ -54,9 +57,12 @@ cte_timeline as (
   from
       {{ ref('stg_event_timeline') }}
 )
+<<<<<<< HEAD
 ),
 ),
 ),
+=======
+>>>>>>> main
 
   select distinct
     ds.event_id,

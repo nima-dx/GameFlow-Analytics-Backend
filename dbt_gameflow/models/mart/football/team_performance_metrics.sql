@@ -35,9 +35,12 @@ event_log as (
     Red_Cards,
     expected_goals,
     points,
+<<<<<<< HEAD
     [point],
     [point],
     [point],
+=======
+>>>>>>> main
     Ball_Possession
   from {{ ref('int_event_log') }}
 )
@@ -70,9 +73,12 @@ select
     sum(ev_lg.Red_Cards) as Red_Cards,
     sum(ev_lg.expected_goals) as expected_goals,
     sum(ev_lg.points) as points,
+<<<<<<< HEAD
     sum(ev_lg.[point]) as point,
     sum(ev_lg.[point]) as point,
     sum(ev_lg.[point]) as point,
+=======
+>>>>>>> main
     sum(ev_lg.Ball_Possession) as Ball_Possession
 from
     event_outlook ev_lk

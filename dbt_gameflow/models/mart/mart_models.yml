@@ -5,3 +5,19 @@ models:
     description: "Mart model for team performance metrics in football"
   - name: players_performance
     description: "Mart model for players performance"
+<<<<<<< HEAD
+=======
+  - name: grandprix
+    description: "The f1 grandprix of the 2026 season"
+    columns:
+      - name: strSeason
+        description: "2026"
+      - name: strEvent
+        description: "Grand Prix name"
+      - name: dateEvent
+        description: "Date its taking place"
+      - name: strTime
+        description: "Time it's taking place"
+      - name: RaceStatus
+        description: "Did it already occur or not"
+>>>>>>> main

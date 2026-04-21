@@ -2,7 +2,11 @@ version: 2
 
 sources:
   - name: raw
+<<<<<<< HEAD
     database: le-wagon-data-atelier
+=======
+    database: "{{ env_var('GCP_PROJECT_ID') }}"
+>>>>>>> main
     schema: raw_dataset
     tables:
       - name: event_stats
@@ -40,6 +44,7 @@ sources:
         description: "Teams data"
         meta:
           alias: teams
+<<<<<<< HEAD
 
       # F1 work start here
       - name: f1_calendar_2026
@@ -80,3 +85,10 @@ sources:
   - name: analytics
     database: le-wagon-data-atelier
     schema: analytics_dataset
+=======
+      - name: grandprix
+        identifier: grandprix
+        description: "Grand Prix data"
+        meta:
+          alias: grandprix
+>>>>>>> main
