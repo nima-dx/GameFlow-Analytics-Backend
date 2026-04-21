@@ -11,7 +11,12 @@ import requests
 # Global variables
 base_url = "https://www.thesportsdb.com/api/v2/json/"
 api_key = os.getenv("API_KEY", "149076")
-output_dir = "/app/airflow/data/api-ingest"
+# output_dir = "/app/airflow/data/api-ingest"
+
+output_dir = '/home/arthurdeetu/code/joaquin-ortega84/GameFlow-Analytics-Backend/joaquin/api_extractor_test'
+
+F1_LEAGUE_ID = 4370
+F1_SEASON = "2026"
 
 
 
@@ -168,6 +173,9 @@ def extract_league_all_events():
         if league.get("strLeague") in target_leagues:
             league_ids.append(league.get("idLeague"))
 
+    # Get list of existing JSON files
+    existing_files = list_json_files()
+
     # For each league, read its seasons file and build URLs
     for league_id in league_ids:
         seasons_file = Path(output_dir) / f"seasons-{league_id}.json"
@@ -187,7 +195,8 @@ def extract_league_all_events():
             if season_id in target_seasons:
                 src_url = f"schedule/league/{league_id}/{season_id}"
                 dest_file_name = f"events-{league_id}-{season_id}.json"
-                write_json(src_url, dest_file_name)
+                if dest_file_name not in existing_files:
+                    write_json(src_url, dest_file_name)
 
 
 def extract_event_timeline_data():
@@ -235,65 +244,77 @@ def extract_event_stats_data():
                 if dest_file_name not in existing_files:
                     write_json(src_url, dest_file_name)
 
+import pandas as pd
+def extract_f1_calendar():
+    url = (
+        f"https://www.thesportsdb.com/api/v1/json/{api_key}/eventsseason.php"
+        f"?id={F1_LEAGUE_ID}&s={F1_SEASON}"
+    )
+    response = requests.get(url)
+    response.raise_for_status()
+
+    events = response.json().get("events") or []
+    races = [
+        e for e in events
+        if "grand prix" in e.get("strEvent", "").lower()
+        and "qualifying" not in e.get("strEvent", "").lower()
+        and "practice" not in e.get("strEvent", "").lower()
+        and "sprint" not in e.get("strEvent", "").lower()
+    ]
+
+    if not races:
+        print("No races found.")
+        return
+
+    # output_file = Path(output_dir) / f"f1_calendar_{F1_SEASON}.json"
+    # output_file.parent.mkdir(parents=True, exist_ok=True)
+    # with open(output_file, "w") as f:
+    #     json.dump(races, f, indent=2)
+
+    output_file = Path(output_dir) / f"f1_calendar_{F1_SEASON}.parquet"
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
+    df = pd.DataFrame(races)
+    df.to_parquet(output_file, index=False)
+
+    print(f"Data saved to {output_file} — {len(races)} races")
 
 
-def extract_f1_data():
-    F1_LEAGUE_ID = 4370
-    F1_TARGET_SEASONS = ["2026"]
+def extract_f1_results():
+    calendar_file = Path(output_dir) / f"f1_calendar_{F1_SEASON}.json"
+    if not calendar_file.exists():
+        print(f"F1 calendar file not found at {calendar_file}. Run 'f1 calendar' first.")
+        return
 
-    for season in F1_TARGET_SEASONS:
-        # ── 1. Fetch calendar ──────────────────────────────────────────
-        url = (
-            f"https://www.thesportsdb.com/api/v1/json/{api_key}/eventsseason.php"
-            f"?id={F1_LEAGUE_ID}&s={season}"
-        )
-        response = requests.get(url)
-        response.raise_for_status()
+    with open(calendar_file, "r") as f:
+        races = json.load(f)
 
-        events = response.json().get("events") or []
-        races = [
-            e for e in events
-            if "grand prix" in e.get("strEvent", "").lower()
-            and "qualifying" not in e.get("strEvent", "").lower()
-            and "practice" not in e.get("strEvent", "").lower()
-            and "sprint" not in e.get("strEvent", "").lower()
-        ]
+    completed = [r for r in races if r.get("strStatus") == "Match Finished"]
+    if not completed:
+        print("No completed races found.")
+        return
 
-        if not races:
-            print(f"No races found for {season}.")
-            continue
+    all_results = []
+    for race in completed:
+        event_id = race.get("idEvent")
+        url = f"https://www.thesportsdb.com/api/v1/json/{api_key}/eventresults.php?id={event_id}"
+        results = requests.get(url).json().get("results") or []
+        all_results.extend(results)
+        print(f"Fetched {len(results)} results for {race.get('strEvent')}")
 
-        # Save calendar
-        calendar_file = Path(output_dir) / f"f1_calendar_{season}.json"
-        calendar_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(calendar_file, "w") as f:
-            json.dump(races, f, indent=2)
-        print(f"{season}: saved {len(races)} races to {calendar_file}")
+    if not all_results:
+        print("No results found.")
+        return
 
-        # ── 2. Fetch results for completed races ───────────────────────
-        completed = [r for r in races if r.get("strStatus") == "Match Finished"]
-        if not completed:
-            print(f"{season}: no completed races yet, skipping results.")
-            continue
+    # output_file = Path(output_dir) / f"f1_race_results_{F1_SEASON}.json"
+    # with open(output_file, "w") as f:
+    #     json.dump(all_results, f, indent=2)
 
-        all_results = []
-        for race in completed:
-            event_id = race.get("idEvent")
-            url = f"https://www.thesportsdb.com/api/v1/json/{api_key}/eventresults.php?id={event_id}"
-            results = requests.get(url).json().get("results") or []
-            all_results.extend(results)
-            print(f"  Fetched {len(results)} results for {race.get('strEvent')}")
+    output_file = Path(output_dir) / f"f1_race_results_{F1_SEASON}.parquet"
+    df = pd.DataFrame(all_results)
+    df.to_parquet(output_file, index=False)
 
-        if not all_results:
-            print(f"{season}: no results found.")
-            continue
-
-        # Save results
-        results_file = Path(output_dir) / f"f1_race_results_{season}.json"
-        with open(results_file, "w") as f:
-            json.dump(all_results, f, indent=2)
-        print(f"{season}: saved {len(all_results)} results to {results_file}")
-
+    print(f"Data saved to {output_file} — {len(all_results)} rows")
 
 
 def list_json_files():
@@ -315,3 +336,8 @@ def list_json_files():
         json_files.append(json_file.name)
 
     return sorted(json_files)
+
+
+if __name__ == "__main__":
+    extract_f1_calendar()
+    extract_f1_results()
