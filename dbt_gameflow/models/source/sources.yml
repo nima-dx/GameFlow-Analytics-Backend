@@ -41,7 +41,6 @@ sources:
         meta:
           alias: teams
 
-
       # F1 work start here
       - name: f1_calendar_2026
         identifier: f1_calendar_2026

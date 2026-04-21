@@ -5,11 +5,6 @@ models:
     description: "Mart model for team performance metrics in football"
   - name: players_performance
     description: "Mart model for players performance"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> f1-dbt
   - name: grandprix
     description: "The f1 grandprix of the 2026 season"
     columns:
@@ -23,4 +18,3 @@ models:
         description: "Time it's taking place"
       - name: RaceStatus
         description: "Did it already occur or not"
->>>>>>> main
