@@ -16,8 +16,22 @@ DATA_DIR = f"{AIRFLOW_HOME}/data/api-ingest"
 LOAD_LOG_FILE = f"{AIRFLOW_HOME}/data/load_log.json"
 
 
-def process_files(file_list, **context):
+def process_files(**context):
     """Process the list of files from GCS and save to JSON."""
+    # Pull the file list from XCom
+    file_list = context['task_instance'].xcom_pull(task_ids='list_gcs_files')
+
+    print(f"DEBUG: file_list type: {type(file_list)}")
+    print(f"DEBUG: file_list content: {file_list}")
+
+    if file_list is None:
+        print("ERROR: No data received from list_gcs_files task")
+        file_list = []
+
+    if not isinstance(file_list, list):
+        print(f"WARNING: Expected list but got {type(file_list)}, converting to list")
+        file_list = list(file_list) if file_list else []
+
     with open(LOAD_LOG_FILE, "w") as f:
         json.dump(file_list, f, indent=2)
     print(f"Saved {len(file_list)} files to {LOAD_LOG_FILE}")
@@ -29,7 +43,7 @@ json_files = glob.glob(f"{DATA_DIR}/*.json") if os.path.exists(DATA_DIR) else []
 
 with DAG(
     "load_multiple",
-    start_date=datetime(2026,4,9),
+    start_date=datetime(2026,4,20),
     schedule="@daily",
     catchup=False,
 ) as dag:
@@ -49,15 +63,15 @@ with DAG(
     list_gcs_files = GCSListObjectsOperator(
         task_id='list_gcs_files',
         bucket=BUCKET_NAME,
-        delimiter='/',
-        gcp_conn_id="google_cloud_connection"
+        gcp_conn_id="google_cloud_connection",
+        do_xcom_push=True
     )
 
     # Process and save the list of files to JSON
     process_task = PythonOperator(
         task_id='process_files',
         python_callable=process_files,
-        op_args=['{{ task_instance.xcom_pull(task_ids="list_gcs_files") }}']
+        provide_context=True
     )
 
     upload_tasks = []

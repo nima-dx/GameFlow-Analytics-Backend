@@ -20,7 +20,7 @@ from ingestion.api_extractors import (
 with DAG(
     dag_id="api_ingest",
     description="Fetch leagues data from TheSportsDB API and save to JSON file",
-    start_date=datetime(2026,4,9),
+    start_date=datetime(2026,4,20),
     schedule="@daily",
     catchup=True
 ) as dag:
