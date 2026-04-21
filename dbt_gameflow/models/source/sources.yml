@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: raw
-    database: "{{ env_var('GCP_PROJECT_ID') }}"
+    database: le-wagon-data-atelier
     schema: raw_dataset
     tables:
       - name: event_stats
@@ -40,8 +40,44 @@ sources:
         description: "Teams data"
         meta:
           alias: teams
-      - name: grandprix
-        identifier: grandprix
-        description: "Grand Prix data"
+
+
+      # F1 work start here
+      - name: f1_calendar_2026
+        identifier: f1_calendar_2026
+        description: "2026 gp schedule"
         meta:
-          alias: grandprix
+          alias: f1_calendar_2026
+      - name: f1_calendar_2025
+        identifier: f1_calendar_2025
+        description: "2025 gp schedule"
+        meta:
+          alias: f1_calendar_2024
+      - name: f1_calendar_2024
+        identifier: f1_calendar_2024
+        description: "2024 gp schedule"
+        meta:
+          alias: f1_calendar_2026
+
+      - name: f1_race_results_2026
+        identifier: f1_race_results_2026
+        description: "2026 gp results"
+        meta:
+          alias: f1_race_results_2026
+
+      - name: f1_race_results_2025
+        identifier: f1_race_results_2025
+        description: "2025 gp results"
+        meta:
+          alias: f1_race_results_2025
+
+      - name: f1_race_results_2024
+        identifier: f1_race_results_2024
+        description: "2024 gp results"
+        meta:
+          alias: f1_race_results_2024
+
+# Adding my intermediate models as a source
+  - name: analytics
+    database: le-wagon-data-atelier
+    schema: analytics_dataset
