@@ -11,3 +11,7 @@ models:
     description: "Intermediate model for event outlook data"
   - name: int_players_timeline
     description: "Intermediate model for players activity"
+  - name: f1_caneldar
+    description: "f1 calendar"
+  - name: f1_race_result
+    description: "f1 race result"

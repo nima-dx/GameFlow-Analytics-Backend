@@ -8,73 +8,86 @@ sources:
       - name: event_stats
         identifier: event_stats
         description: "Event statistics data"
-        meta:
-          alias: event_stats
+        config:
+          meta:
+            alias: event_stats
       - name: event_timeline
         identifier: event_timeline
         description: "Event timeline data"
-        meta:
-          alias: event_timeline
+        config:
+          meta:
+            alias: event_timeline
       - name: events
         identifier: events
         description: "Events data"
-        meta:
-          alias: events
+        config:
+          meta:
+            alias: events
       - name: leagues
         identifier: leagues
         description: "Leagues data"
-        meta:
-          alias: leagues
+        config:
+          meta:
+            alias: leagues
       - name: players
         identifier: players
         description: "Players data"
-        meta:
-          alias: players
+        config:
+          meta:
+            alias: players
       - name: seasons
         identifier: seasons
         description: "Seasons data"
-        meta:
-          alias: seasons
+        config:
+          meta:
+            alias: seasons
       - name: teams
         identifier: teams
         description: "Teams data"
-        meta:
-          alias: teams
+        config:
+          meta:
+            alias: teams
 
       # F1 work start here
       - name: f1_calendar_2026
         identifier: f1_calendar_2026
         description: "2026 gp schedule"
-        meta:
-          alias: f1_calendar_2026
+        config:
+          meta:
+            alias: f1_calendar_2026
       - name: f1_calendar_2025
         identifier: f1_calendar_2025
         description: "2025 gp schedule"
-        meta:
-          alias: f1_calendar_2024
+        config:
+          meta:
+            alias: f1_calendar_2024
       - name: f1_calendar_2024
         identifier: f1_calendar_2024
         description: "2024 gp schedule"
-        meta:
-          alias: f1_calendar_2026
+        config:
+          meta:
+            alias: f1_calendar_2026
 
       - name: f1_race_results_2026
         identifier: f1_race_results_2026
         description: "2026 gp results"
-        meta:
-          alias: f1_race_results_2026
+        config:
+          meta:
+            alias: f1_race_results_2026
 
       - name: f1_race_results_2025
         identifier: f1_race_results_2025
         description: "2025 gp results"
-        meta:
-          alias: f1_race_results_2025
+        config:
+          meta:
+            alias: f1_race_results_2025
 
       - name: f1_race_results_2024
         identifier: f1_race_results_2024
         description: "2024 gp results"
-        meta:
-          alias: f1_race_results_2024
+        config:
+          meta:
+            alias: f1_race_results_2024
 
 # Adding my intermediate models as a source
   - name: analytics
